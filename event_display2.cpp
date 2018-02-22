@@ -1,4 +1,4 @@
-void event_display2(int evenum = 3338){
+void event_display2(int evenum = 302){
   TString matchfile;
   matchfile.Form("../rootfile/cosmic/cosmi_1224_2163.root");
   //  matchfile.Form("../rootfile/everything/testWE.root");
