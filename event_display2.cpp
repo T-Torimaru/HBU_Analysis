@@ -1,6 +1,7 @@
-void event_display2(int evenum = 302){
+using namespace TMath;
+void event_display2(int evenum = 3370){
   TString matchfile;
-  matchfile.Form("../rootfile/cosmic/cosmi_1224_2163.root");
+  matchfile.Form("../rootfile/cosmic/18Feb20_6layer/cosmi_0220_2262.root");
   //  matchfile.Form("../rootfile/everything/testWE.root");
   TFile *fmatch = new TFile(matchfile.Data(), "read");
   TTree *tmatch = (TTree*)fmatch->Get("bigtree");
@@ -13,13 +14,19 @@ void event_display2(int evenum = 302){
   Double_t recoX[2][8];
   Double_t recoY[2][8];
   Double_t trueReco[6];
+  Int_t nMax;
+  // Double_t HBU_x,HBU_y;
+  // Double_t HBU_z=217.8;
+  //  Double_t SquDis;
 
   tmatch->SetBranchAddress("ahc_nHits", &Hnhit);
+  tmatch->SetBranchAddress("hod_maxPass", &nMax);
   tmatch->SetBranchAddress("ahc_hitI", HhitI);
   tmatch->SetBranchAddress("ahc_hitJ", HhitJ);
   tmatch->SetBranchAddress("ahc_hitK", HhitK);
   tmatch->SetBranchAddress("ahc_hitPos", HhitPos);
   tmatch->SetBranchAddress("ahc_hitEnergy", HADC);
+  //  tmatch->SetBranchAddress("squareDis", SquDis);
   TString ephname,nxname,nyname,recxname,recyname,truexname,trueyname,truezname;
   for (int m = 0; m < 2; m++) {
     ephname.Form("hod%d_nph",m+1);
@@ -42,7 +49,7 @@ void event_display2(int evenum = 302){
 
   for (int i=evenum;i<tmatch->GetEntries();i++) {
     tmatch->GetEntry(i);
-    if (Hnhit<=3) continue;
+    if (Hnhit<=2) continue;
     int flag[2]={0,0};
     for (int n=0;n<Hnhit;n++) {
       if (HhitK[n]==2) flag[0]=1;
@@ -58,7 +65,7 @@ void event_display2(int evenum = 302){
   TCanvas *canvas1 = new TCanvas("canvas1","scintillator plate",500,500);
   TCanvas *canvas2 = new TCanvas("canvas2","scintillator plate",500,500);
   TCanvas *canvas3 = new TCanvas("canvas3","combined",900,600);
-  //TCanvas *canvas4 = new TCanvas("canvas4","combined",900,600);
+  //  TCanvas *canvas4 = new TCanvas("canvas4","Square Distance",696,500);
 
   /*Get event*/
   tmatch->GetEntry(evenum);
@@ -74,8 +81,11 @@ void event_display2(int evenum = 302){
   cout<<"  hod1: "<<nX[0]<<"x"<<nY[0]<<endl;
   cout<<"  hod2: "<<nX[1]<<"x"<<nY[1]<<endl;
   cout<<"  nhit: "<<Hnhit<<endl;
+  cout<<"nMax: "<<nMax<<endl;
+  //  cout<<"  hitK: "<<HhitK[3]<<endl;
 
   TH2F *hcr[2];
+  //  TH1F *squdist;
   TGraphErrors *recoG[2];
   TGraph2D *Edisplay = new TGraph2D();
   TGraph2D *Hdisplay = new TGraph2D();
@@ -85,6 +95,7 @@ void event_display2(int evenum = 302){
 
   hcr[0] = new TH2F("hcr1","CR1 ly display;x[mm];y[mm]",84,-210,210,84,-210,210);
   hcr[1] = new TH2F("hcr2","CR2 ly display;x[mm];y[mm]",84,-210,210,84,-210,210);
+  //  squdist = new TH1F("squdist","Square Distance;x^2[mm];Entry",200,0,300);
   for (int m=0;m<2;m++) {
     for (int chx=0;chx<84;chx++) {
       for (int chy=0;chy<84;chy++) {
@@ -92,7 +103,27 @@ void event_display2(int evenum = 302){
       }
     }
   }
-
+  // Double_t fakeHBU_x,fakeHBU_y;
+  // Double_t distance;
+  // Double_t sigma=9. + (30/Sqrt(12.))**2;
+  //   cout<<"  sigma: "<<sigma<<endl;
+  // if (HhitK[3]==2){
+  //   HBU_x=(trueReco[3]-trueReco[0])*(HBU_z-trueReco[2])/(trueReco[5]-trueReco[2])+trueReco[0];
+  //   HBU_y=(trueReco[4]-trueReco[1])*(HBU_z-trueReco[2])/(trueReco[5]-trueReco[2])+trueReco[1];
+  //   for (int i=0;i<nX[0];i++){
+  //     for (int j=0;j<nX[1];j++){      
+  // 	for (int k=0;k<nY[0];k++){
+  // 	  for (int l=0;l<nY[1];l++){      
+  // 	    fakeHBU_x=(recoX[1][i]*HBU_z+(trueReco[5]-HBU_z)*recoX[0][j])/(trueReco[5]-trueReco[2]);
+  // 	    fakeHBU_y=(recoY[1][l]*HBU_z+(trueReco[5]-HBU_z)*recoY[0][k])/(trueReco[5]-trueReco[2]);
+  // 	    distance=Sqrt((HhitPos[Hnhit][0]-fakeHBU_x)*(HhitPos[Hnhit][0]-fakeHBU_x)+(HhitPos[Hnhit][1]-fakeHBU_y)*(HhitPos[Hnhit][1]-fakeHBU_y));
+  // 	    squdist->Fill(distance**2/sigma);
+  // 	    cout<<"  distance: "<<distance<<endl;
+  // 	  }
+  // 	}
+  //     }
+  //   }
+  // }
   Edisplay->SetMarkerStyle(20);
   Hdisplay->SetMarkerStyle(21);
   Hdisplay->SetMarkerColor(2);
@@ -172,4 +203,6 @@ HhitPos[n][0]-15,HhitPos[n][1]-15,HhitPos[n][2]};
   Hdisplay->Draw("P same");
   for (int n=0;n<Hnhit;n++) tile[n]->Draw("same");
   line->Draw("same");
+  // canvas4->cd();
+  // squdist->Draw();
 }

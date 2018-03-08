@@ -7,8 +7,8 @@ void BeamTest() {
   Float_t pea,error;
   char canvasName[256];
 
-  TFile * inputFile = TFile::Open("../rootfile/everything/combination2.root");
   //  TFile * inputFile = TFile::Open("../rootfile/MIP/MIPcombination.root");
+  TFile * inputFile = TFile::Open("../rootfile/MIP/MIPcombination.root");
   TTree * tr = (TTree *) inputFile->Get("tree");
 
   // Float_t ped[12][12] = {
@@ -63,29 +63,33 @@ void BeamTest() {
 
   //  cout<<gain[4][35]<<endl;
 
-  ifstream ifs("../txt/testBeam_pedestal.txt");
-  //  ifstream ifs("../txt/pedestal_MIP_all2.txt");
+  //  ifstream ifs("../txt/testBeam_pedestal.txt");
+  ifstream ifs("../txt/pedestal_MIP_all2.txt");
   while(ifs>>n>>m>>pea>>error){
-    //    if (n==132 || n==135 || n==138 || n==141){
-    // n=n-132;
-    // n=n/3;
-    pedestal[n][m]=pea;
+    if (n==132 || n==135 || n==138 || n==141){
+      n=n-132;
+      n=n/3;
+      pedestal[n][m]=pea;
+    }
   }
-  //}
   ifs.close();
   
-  //  ifstream ifa("../txt/testBeam_Allchannel_gain600fF.txt");
-  ifstream ifa("../txt/testBeam_gain2.txt");
+  ifstream ifa("../txt/testBeam_Allchannel_gain600fF_chip138.txt");
+  //  ifstream ifa("../txt/testBeam_gain_138.txt");
   while(ifa>>n>>m>>pea){
-    // if (n==132 || n==135 || n==138 || n==141){
-    //   n=n-132;
-    //   n=n/3;
-    gain[n][m]=pea;
+    if (n==132 || n==135 || n==138 || n==141){
+      n=n-132;
+      n=n/3;
+      gain[n][m]=pea;
+    }
   }
-  //  }
   ifa.close();
-
-
+  // for (int i=0;i<36;i++) {
+  // gain[0][i]=15.5155;
+  // gain[1][i]=15.087;
+  // gain[2][i]=23.0949;
+  // gain[3][i]=12.801;
+  // }
 
   
   Int_t adc;
@@ -144,7 +148,7 @@ void BeamTest() {
   // f1->Draw("same");
   
 
-  FILE *output = fopen("../txt/testBeamresults.txt","w");
+  FILE *output = fopen("../txt/testBeamAllMIPcentral600fF_chip138.txt","w");
   for (int i=0;i<4;i++) {
     for (int j=0;j<36;j++) {
       langaus(chargeH[i][j], &f1, &peakP, &peakError);
@@ -159,7 +163,7 @@ void BeamTest() {
       c1->cd();
       chargeH[i][j]->Draw();
       f1->Draw("same");
-      sprintf(canvasName,"../png/12_12_200fF/fit%d_%d.png",i,j);
+      sprintf(canvasName,"../png/12_12_600fF/chip138_fit%d_%d.png",i,j);
       c1->SaveAs(canvasName);
     }
   }

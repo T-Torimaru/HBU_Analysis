@@ -174,6 +174,7 @@ void efficiency(){
   cout<<"devide: "<<count[0][1][1]/entry_center[0]<<endl;
   cout<<"count[0][2][2]: "<<count[0][2][2]<<endl;
   cout<<"entry_center[0]: "<<entry_center[0]<<endl;
+
   // canv2->cd();
   // shift[1]->Draw();
   // sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d.png",rangeI+1,rangeJ+1);

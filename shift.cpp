@@ -1,4 +1,4 @@
-void efficiency(){
+void shift(){
   TString matchfile;
   matchfile.Form("../rootfile/cosmic/18Feb20_6layer/cosmi_0220_2262.root");
   TFile *fmatch = new TFile(matchfile.Data(), "read");
@@ -54,16 +54,8 @@ void efficiency(){
     tmatch->SetBranchAddress(truezname,&tReco[3*m+2]);
   }
 
-  // TH1F *efficiencyH = new TH1F("histo","Tile Response Efficiency",20,0,1);
-  // TCanvas *c1 = new TCanvas("c1","c1",696,500);
-
   TH2F *shift[6];
   TCanvas *canv1 = new TCanvas("c1","c1",500,500);
-  // TCanvas *canv2 = new TCanvas("c1","c2",500,500);
-  // TCanvas *canv3 = new TCanvas("c1","c3",500,500);
-  // TCanvas *canv4 = new TCanvas("c1","c4",500,500);
-  // TCanvas *canv5 = new TCanvas("c1","c5",500,500);
-  // TCanvas *canv6 = new TCanvas("c1","c6",500,500);
 
   for (int layer=0;layer<6;layer++) {
     sprintf(histoName,"Shift_Layer%d",layer+1);
@@ -75,13 +67,6 @@ void efficiency(){
   gStyle->SetOptStat(0);
   gStyle->SetPalette(1);
 
-  // Int_t modX,modY;
-  // Double_t deciX,deciY;
-  // Double_t valid1=2;
-  // Double_t valid2=28;
-  // Double_t val1,val2;
-  // Double_t tileEdge[2][2];
-  // bool eff[4];
   for (int i=0;i<nEntries;i++){
     if (i==7294) continue;
     tmatch->GetEntry(i);
@@ -153,11 +138,7 @@ void efficiency(){
     
   }
 
-  // cout<<"count[0][0][0]: "<<count[0][1][1]<<endl;
-  // cout<<"Entry: "<<nEntries<<endl;
-  // cout<<"entry_center[0]: "<<entry_center[0]<<endl;
-
-  FILE *output = fopen("../txt//shift/shift_6layer_0220_6_6.txt","w");
+  FILE *output = fopen("../txt/shift/shift_6layer_0220_6_6.txt","w");
   for (int layer=0;layer<6;layer++) {
     for (int xaxis=0;xaxis<3;xaxis++) {
       for (int yaxis=0;yaxis<3;yaxis++) {
@@ -167,116 +148,9 @@ void efficiency(){
     }
   }
   canv1->cd();
-  shift[0]->Draw("colztext");
-  sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d.png",rangeI+1,rangeJ+1);
+  shift[2]->Draw("colztext");
+  sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d_layer3.png",rangeI+1,rangeJ+1);
   canv1->SaveAs(canvasName);
   fclose(output);
-  cout<<"devide: "<<count[0][1][1]/entry_center[0]<<endl;
-  cout<<"count[0][2][2]: "<<count[0][2][2]<<endl;
-  cout<<"entry_center[0]: "<<entry_center[0]<<endl;
-  // canv2->cd();
-  // shift[1]->Draw();
-  // sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d.png",rangeI+1,rangeJ+1);
-  // canv2->SaveAs(canvasName);
-  // canv3->cd();
-  // shift[2]->Draw();
-  // sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d.png",rangeI+1,rangeJ+1);
-  // canv3->SaveAs(canvasName);
-  // canv4->cd();
-  // shift[3]->Draw();
-  // sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d.png",rangeI+1,rangeJ+1);
-  // canv4->SaveAs(canvasName);
-  // canv5->cd();
-  // shift[4]->Draw();
-  // sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d.png",rangeI+1,rangeJ+1);
-  // canv5->SaveAs(canvasName);
-  // canv6->cd();
-  // shift[5]->Draw();
-  // sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d.png",rangeI+1,rangeJ+1);
-  // canv6->SaveAs(canvasName);
 
-  // cout<<"count : "<<count[0][1][1]<<endl;
-  // cout<<"count : "<<count[1][0][1]<<endl;
-    
-    // Double_t count1=0;
-  // Double_t count2=0;
-
-  // for (int j=0;j<4;j++){
-  //   HBU_x[j]=(tReco[3]-tReco[0])*(HBU_z[j]-tReco[2])/(tReco[5]-tReco[2])+tReco[0];
-  //   HBU_y[j]=(tReco[4]-tReco[1])*(HBU_z[j]-tReco[2])/(tReco[5]-tReco[2])+tReco[1];
-  //   if (HBU_x[j]<0) {
-  //     modX=-HBU_x[j];
-  //     tileI=6-modX/30;
-  //     deciX=-HBU_x[j]-modX;
-  //   }
-  //   else {
-  //     modX=HBU_x[j];
-  //     deciX=HBU_x[j]-modX;
-  //     tileI=modX/30+7;
-  //   }
-  //   if (HBU_y[j]<0) {
-  //     modY=-HBU_y[j];
-  //     tileJ=6-modY/30;
-  //     deciY=-HBU_y[j]-modY;
-  //   }
-  //   else {
-  //     modY=HBU_y[j];
-  //     deciY=HBU_y[j]-modY;
-  //     tileJ=modY/30+7;
-  //   }
-  //   modX=modX%30;
-  //   modY=modY%30;
-  //   val1=modX+deciX;
-  //   val2=modY+deciY;
-  //   if (val1<valid1 || val1>valid2 || val2<valid1 || val2>valid2 || tileI<0 || tileI>13 || tileJ<0 || tileJ>13) eff[j]=false;
-  //   else {
-  //     eff[j]=true;
-  //     effic1[j][tileI][tileJ]=effic1[j][tileI][tileJ]+1;
-  //   }
-    // if (i==16) {
-    //   //      cout<<effic1[j][tileI][tileJ]<<endl; 
-    //   //      cout<<HBU_x[j]<<" "<<HBU_y[j]<<endl;    
-    //   cout<<j<<" "<<tileI<<" "<<tileJ<<endl; 
-    //    }
-  // if (i==16){
-  //   cout<<effic1[0][3][7]<<endl;    
-  //   cout<<effic1[1][3][7]<<endl;    
-  //   cout<<effic1[3][8][13]<<endl;    
-  // }
-  // for (int k=0;k<Hnhit;k++){
-  //   if (eff[HhitK[k]-1]){
-  //   tileEdge[0][0]=HhitPos[k][0]+15;
-  //   tileEdge[0][1]=HhitPos[k][0]-15;
-  //   tileEdge[1][0]=HhitPos[k][1]+15;
-  //   tileEdge[1][1]=HhitPos[k][1]-15;
-       // if (i==16){
-       // 	 cout<<"HhitK : "<<HhitK[k]-1<<" "<<"HhitI : "<<HhitI[k]-6<<" "<<"HhitJ : "<<HhitJ[k]-6<<endl;
-       // //       effic2[HhitK-1][HhitI-7][HhitJ-7];
-       // }
-    // cout<<HhitK[k]<<endl;
-    // cout<<HBU_x[HhitK[k]-1]<<" "<<HBU_y[HhitK[k]-1]<<endl;
-    // cout<<tileEdge[0][1]<<" "<<tileEdge[0][0]<<" "<<tileEdge[1][1]<<" "<<tileEdge[1][0]<<endl;    
-  //    if (tileEdge[0][1]<HBU_x[HhitK[k]-1] && tileEdge[0][0]>HBU_x[HhitK[k]-1] && tileEdge[1][0]>HBU_y[HhitK[k]-1] && tileEdge[1][1]<HBU_y[HhitK[k]-1]) {
-  //      effic2[HhitK[k]-1][HhitI[k]-6][HhitJ[k]-6]++;
-  //    }
-  //   }
-  // }
-
-  // for (int i=0;i<4;i++){
-  //   for (int j=0;j<14;j++) {
-  //     for (int k=0;k<14;k++) {
-  // 	if (effic1[i][j][k]!=0){
-  // 	  efficiencyH->Fill(effic2[i][j][k]/effic1[i][j][k]);
-  // 	}
-  //     }
-  //   }
-  // }
-  // c1->cd();
-  // efficiencyH->Draw();
-  // sprintf(canvasName,"../png/efficiency_2017Dec_test.png");
-  // c1->SaveAs(canvasName);
-  // cout<<effic1[3][5][8]<<endl;
-  // cout<<effic1[2][5][8]<<endl;
-  // cout<<effic2[3][5][8]<<endl;    
-  // cout<<effic2[2][5][8]<<endl;    
 }
