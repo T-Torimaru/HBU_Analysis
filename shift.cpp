@@ -1,6 +1,6 @@
 void shift(){
   TString matchfile;
-  matchfile.Form("../rootfile/cosmic/18Feb20_6layer/cosmi_0220_2262.root");
+  matchfile.Form("../rootfile/cosmic/18Feb20_6layer/cosmi_0220.root");
   TFile *fmatch = new TFile(matchfile.Data(), "read");
   TTree *tmatch = (TTree*)fmatch->Get("bigtree");
   char canvasName[256];
@@ -21,8 +21,8 @@ void shift(){
   Double_t effic2[4][14][14];
   Int_t nPass;
   Int_t nEntries=tmatch->GetEntries();
-  Int_t rangeI = 6;
-  Int_t rangeJ = 6;
+  Int_t rangeI = 9;
+  Int_t rangeJ = 9;
   Int_t count[6][3][3]={0};
   Double_t HBU_x[64]={0},HBU_y[64]={0},HBU_z[64]={0};
   Double_t constHBU_z[6]={131.15,174.45,217.75,261.05,304.35,347.65};
@@ -68,7 +68,7 @@ void shift(){
   gStyle->SetPalette(1);
 
   for (int i=0;i<nEntries;i++){
-    if (i==7294) continue;
+    if (i==7294 || i==17572 || i==33381 || i==42705 || i==44465 || i==48873 || i==48979 || i==50060 || i==68587 || i==108446 || i==145457 || i==198356 || i==217244 || i==231350 || i==291337) continue;
     tmatch->GetEntry(i);
     if (Hnhit>64) continue;
     Double_t tmp;
@@ -138,7 +138,7 @@ void shift(){
     
   }
 
-  FILE *output = fopen("../txt/shift/shift_6layer_0220_6_6.txt","w");
+  FILE *output = fopen("../txt/shift/shift_6layer_0220_9_9.txt","w");
   for (int layer=0;layer<6;layer++) {
     for (int xaxis=0;xaxis<3;xaxis++) {
       for (int yaxis=0;yaxis<3;yaxis++) {
@@ -148,9 +148,13 @@ void shift(){
     }
   }
   canv1->cd();
-  shift[2]->Draw("colztext");
-  sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d_layer3.png",rangeI+1,rangeJ+1);
+  shift[5]->Draw("colztext");
+  sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d_layer5.png",rangeI+1,rangeJ+1);
   canv1->SaveAs(canvasName);
   fclose(output);
+  
+  // cout<<"count[0][1][1]: "<<count[0][1][1]<<endl;
+  // cout<<"entry_center[0]: "<<entry_center[0]<<endl;
 
+	
 }
