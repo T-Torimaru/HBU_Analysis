@@ -8,7 +8,7 @@ void BeamTest() {
   char canvasName[256];
 
   //  TFile * inputFile = TFile::Open("../rootfile/MIP/MIPcombination.root");
-  TFile * inputFile = TFile::Open("../rootfile/MIP/MIPcombination.root");
+  TFile * inputFile = TFile::Open("../rootfile/central_200fF_beam/central_200fF.root");
   TTree * tr = (TTree *) inputFile->Get("tree");
 
   // Float_t ped[12][12] = {
@@ -63,25 +63,25 @@ void BeamTest() {
 
   //  cout<<gain[4][35]<<endl;
 
-  //  ifstream ifs("../txt/testBeam_pedestal.txt");
-  ifstream ifs("../txt/pedestal_MIP_all2.txt");
+  ifstream ifs("../txt/testBeam_pedestal_calib.txt");
+  //  ifstream ifs("../txt/pedestal_MIP_all2.txt");
   while(ifs>>n>>m>>pea>>error){
-    if (n==132 || n==135 || n==138 || n==141){
-      n=n-132;
-      n=n/3;
+    // if (n==132 || n==135 || n==138 || n==141){
+    //   n=n-132;
+    //   n=n/3;
       pedestal[n][m]=pea;
-    }
+  //   }
   }
   ifs.close();
   
-  ifstream ifa("../txt/testBeam_Allchannel_gain600fF_chip138.txt");
-  //  ifstream ifa("../txt/testBeam_gain_138.txt");
+  //  ifstream ifa("../txt/testBeam_Allchannel_gain600fF_chip138.txt");
+  ifstream ifa("../txt/testBeam_gain_138.txt");
   while(ifa>>n>>m>>pea){
-    if (n==132 || n==135 || n==138 || n==141){
-      n=n-132;
-      n=n/3;
+    // if (n==132 || n==135 || n==138 || n==141){
+    //   n=n-132;
+    //   n=n/3;
       gain[n][m]=pea;
-    }
+      //    }
   }
   ifa.close();
   // for (int i=0;i<36;i++) {
@@ -105,7 +105,7 @@ void BeamTest() {
   TH1F *chargeH[4][36];
   TH2F *hitMap = new TH2F("hitMap","HBU light yield map in DESY;y [mm];x [mm]",12,-180,180,12,-180,180);
   hitMap->SetMaximum(20.);
-  hitMap->SetMinimum(8.);
+  hitMap->SetMinimum(6.3);
   
   TF1 *f1;
   Double_t peakP, peakError;
@@ -116,7 +116,7 @@ void BeamTest() {
   for (int i=0;i<4;i++) {
     for (int j=0;j<36;j++) {
       sprintf(histoName,"chargeH%d_%d",132+3*i,j+1);
-      chargeH[i][j] = new TH1F(histoName,"light yield histogram;Npe",40,0,40);
+      chargeH[i][j] = new TH1F(histoName,"light yield histogram;Npe",50,0,50);
       chargeH[i][j]->SetLineColor(1);
     }
   }
@@ -148,7 +148,7 @@ void BeamTest() {
   // f1->Draw("same");
   
 
-  FILE *output = fopen("../txt/testBeamAllMIPcentral600fF_chip138.txt","w");
+  FILE *output = fopen("../txt/testBeamresults_200fF_central_138.txt","w");
   for (int i=0;i<4;i++) {
     for (int j=0;j<36;j++) {
       langaus(chargeH[i][j], &f1, &peakP, &peakError);

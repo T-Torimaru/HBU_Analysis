@@ -9,7 +9,7 @@ void ratio_cosmic_testbeam() {
   Float_t cosmic[12][12];
   Float_t cosm[4][36];
 
-  ifstream ifs("../txt/testBeamAllMIPcentral600fF_chip138.txt");
+  ifstream ifs("../txt/testBeamresults_200fF_central_138.txt");
   while(ifs>>n>>m>>pea){
     beam[n][m]=pea;
   }
@@ -45,7 +45,7 @@ void ratio_cosmic_testbeam() {
   gStyle->SetOptStat(0);
   gStyle->SetPalette(1);
 
-  FILE *output = fopen("../txt/ratio_testBeam_cosmic_600_chip138.txt","w");
+  FILE *output = fopen("../txt/ratio_testBeam_cosmic_200_chip138.txt","w");
   for (int i=0;i<4;i++) {
     for (int j=0;j<36;j++) {
       if (i==0 || i==1) {
