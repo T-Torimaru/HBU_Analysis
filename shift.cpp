@@ -21,8 +21,8 @@ void shift(){
   Double_t effic2[4][14][14];
   Int_t nPass;
   Int_t nEntries=tmatch->GetEntries();
-  Int_t rangeI = 2;
-  Int_t rangeJ = 9;
+  Int_t rangeI = 9;
+  Int_t rangeJ = 2;
   Int_t count[6][3][3]={0};
   Double_t HBU_x[64]={0},HBU_y[64]={0},HBU_z[64]={0},fHBU_x,fHBU_y,distance;
   Double_t constHBU_z[6]={131.15,174.45,217.75,261.05,304.35,347.65};
@@ -55,9 +55,9 @@ void shift(){
   }
 
   TH2F *shift[6];
-  TCanvas *canv1 = new TCanvas("c1","c1",500,500);
-  TCanvas *canv2 = new TCanvas("c2","c2",696,500);
-  TH1F *xi =new TH1F("xi^2","xi^2",100,0,100);
+  //  TCanvas *canv1 = new TCanvas("c1","c1",500,500);
+  //  TCanvas *canv2 = new TCanvas("c2","c2",696,500);
+  //  TH1F *xi =new TH1F("xi^2","xi^2",100,0,100);
 
   for (int layer=0;layer<6;layer++) {
     sprintf(histoName,"Shift_Layer%d",layer+1);
@@ -71,15 +71,12 @@ void shift(){
   //  gStyle->SetOptFit();
   gStyle->SetOptStat(1111);
 
-  for (int i=0;i<50;i++){
+  for (int i=0;i<nEntries;i++){
     if (i==7294 || i==17572 || i==33381 || i==42705 || i==44465 || i==48873 || i==48979 || i==50060 || i==68587 || i==108446 || i==145457 || i==198356 || i==217244 || i==231350 || i==291337) continue;
     tmatch->GetEntry(i);
     if (Hnhit>18 || nPass<5) continue;
     Double_t tmp;
     Int_t nTmp,ntp;
-    // for (int j=0;j<Hnhit;j++){
-    //   cout<<"HhitK : "<<HhitK[j]<<endl;     
-    // }
     for (int j=0;j<Hnhit;j++){
       for (int k=j+1;k<Hnhit;k++){
   	if (HhitPos[j][2] > HhitPos[k][2]){
@@ -108,9 +105,7 @@ void shift(){
   	  HADC[k] = tmp;
   	}
       }
-      //      cout<<"HhitK : "<<HhitK[j]<<endl;     
     }
-    //      cout<<" "<<endl; 
       
     if (nPass==5&&HhitK[0]!=1) continue;
 
@@ -123,14 +118,32 @@ void shift(){
       xaxisI=HhitI[j]-rangeI-6;
       yaxisJ=HhitJ[j]-rangeJ-6;
 
-      // if (ntp==1) {
+      // if (ntp==0) {
+      // 	HBU_x[j]=HBU_x[j]+0.35;
+      // 	HBU_y[j]=HBU_y[j]+5.;
+      // }
+      if (ntp==1) {
+      	HBU_x[j]=HBU_x[j]+0.14;
+      	HBU_y[j]=HBU_y[j]+0.005;
+      }
+      if (ntp==2) {
+	HBU_x[j]=HBU_x[j]-0.223;
+      	HBU_y[j]=HBU_y[j]+1.045;
+      }
+      // if (ntp==3) {
       // 	HBU_x[j]=HBU_x[j]+4.;
       // 	HBU_y[j]=HBU_y[j]+2.;
       // }
-      //      if (ntp==2) {
-	//      	HBU_x[j]=HBU_x[j]+0.35;
+      // if (ntp==4) {
+      // 	HBU_x[j]=HBU_x[j]+0.35;
       // 	HBU_y[j]=HBU_y[j]+5.;
       // }
+      // if (ntp==5) {
+      // 	HBU_x[j]=HBU_x[j]+4.;
+      // 	HBU_y[j]=HBU_y[j]+2.;
+      // }
+      
+      if (HhitK[j+1]==HhitK[j]) continue;
       if (   HBU_x[j]>-205.+30.*(rangeI+1)
       	     && HBU_x[j]<-215.+30.*(rangeI+2)
       	     && HBU_y[j]>-205.+30.*(rangeJ+1)
@@ -138,9 +151,7 @@ void shift(){
       	     && xaxisI < 3 && yaxisJ < 3
       	     && xaxisI >= 0 && yaxisJ >= 0
       	     ) {
-	if (HhitK[j+1]!=HhitK[j]) {
-	  entry_center[ntp]++;
-      }
+	entry_center[ntp]++;
       	count[ntp][xaxisI][yaxisJ]++;
       }
       // cout<<"HBU_x : "<<HBU_x[j]<<endl;
@@ -150,7 +161,7 @@ void shift(){
       // cout<<"HhitJ : "<<HhitJ[j]<<endl;
       // cout<<"HhitK : "<<HhitK[j]<<endl;
       // cout<<" "<<endl;
-     }
+    }
     // cout<<"entry_center : "<<entry_center[5]<<endl;	 
     // cout<<"count[0][1][2] : "<<count[0][1][2]<<endl;
     // cout<<"count[0][2][1] : "<<count[0][2][1]<<endl;
@@ -159,22 +170,22 @@ void shift(){
     // cout<<"count[0][1][1] : "<<count[0][1][1]<<endl;
     // cout<<"entry_center[0]: "<<entry_center[0]<<endl;
     // cout<<""<<endl;
-    if (i==25) {
-      for (int n1x=0;n1x<nX[0];n1x++) {
-	for (int n1y=0;n1y<nY[0];n1y++) {
-	  for (int n2x=0;n2x<nX[1];n2x++) {
-	    for (int n2y=0;n2y<nY[1];n2y++) {
-	      fHBU_x=(recoX[1][n2x]-recoX[0][n1x])*(HBU_z[0]-tReco[2])/(tReco[5]-tReco[2])+recoX[0][n1x];
-	      fHBU_y=(recoY[1][n2y]-recoY[0][n2y])*(HBU_z[0]-tReco[2])/(tReco[5]-tReco[2])+recoY[0][n2y];
-	      xi->Fill(((fHBU_x-HhitPos[0][0])*(fHBU_x-HhitPos[0][0])+(fHBU_y-HhitPos[0][1])*(fHBU_y-HhitPos[0][1]))/84);
+    // if (i==25) {
+    //   for (int n1x=0;n1x<nX[0];n1x++) {
+    // 	for (int n1y=0;n1y<nY[0];n1y++) {
+    // 	  for (int n2x=0;n2x<nX[1];n2x++) {
+    // 	    for (int n2y=0;n2y<nY[1];n2y++) {
+    // 	      fHBU_x=(recoX[1][n2x]-recoX[0][n1x])*(HBU_z[0]-tReco[2])/(tReco[5]-tReco[2])+recoX[0][n1x];
+    // 	      fHBU_y=(recoY[1][n2y]-recoY[0][n2y])*(HBU_z[0]-tReco[2])/(tReco[5]-tReco[2])+recoY[0][n2y];
+    // 	      xi->Fill(((fHBU_x-HhitPos[0][0])*(fHBU_x-HhitPos[0][0])+(fHBU_y-HhitPos[0][1])*(fHBU_y-HhitPos[0][1]))/84);
 
 	      // if (n1x==1&&n1y==1&&n2x==1&&n2y==1){
 	      // xi->Fill(((HBU_x[0]-HhitPos[0][0])*(HBU_x[0]-HhitPos[0][0])+(HBU_y[0]-HhitPos[0][1])*(HBU_y[0]-HhitPos[0][1]))/84);
 	      // 	      }
-	    }
-	  }
-	}
-      }
+      // 	    }
+      // 	  }
+      // 	}
+      // }
 
       //      cout<<"nhits : "<<(HBU_x[0]-HhitPos[0][0])*(HBU_x[0]-HhitPos[0][0])+(HBU_y[0]-HhitPos[0][1])*(HBU_y[0]-HhitPos[0][1])<<endl;
       // cout<<"HBU_x : "<<HBU_x[0]<<endl;
@@ -183,8 +194,8 @@ void shift(){
       // cout<<"HhitPosY : "<<HhitPos[0][1]<<endl;
       // cout<<"HhitI : "<<HhitI[0]<<endl;
       // cout<<"HhitJ : "<<HhitJ[0]<<endl;
-    }
   }
+
 
   //  FILE *output = fopen("../txt/shift/shift_6layer_0220_2_2.txt","w");
   for (int layer=0;layer<6;layer++) {
@@ -195,21 +206,81 @@ void shift(){
       }
     }
   }
-  canv1->cd();
-  shift[0]->Draw("colztext");
+  // canv1->cd();
+  // shift[0]->Draw("colztext");
   // sprintf(canvasName,"../png/efficiency/shift/cosmic0220_%d_%d_layer5.png",rangeI+1,rangeJ+1);
   // canv1->SaveAs(canvasName);
   //  fclose(output);
 
-  canv2->cd();
-  xi->Draw();
+  // canv2->cd();
+  // xi->Draw();
   
   cout<<"count[0][1][2]: "<<count[0][1][2]<<endl;
+  cout<<"count[0][2][2]: "<<count[0][2][2]<<endl;
   cout<<"count[0][2][1]: "<<count[0][2][1]<<endl;
+  cout<<"count[0][2][0]: "<<count[0][2][0]<<endl;
   cout<<"count[0][1][0]: "<<count[0][1][0]<<endl;
+  cout<<"count[0][0][0]: "<<count[0][0][0]<<endl;
   cout<<"count[0][0][1]: "<<count[0][0][1]<<endl;
+  cout<<"count[0][0][2]: "<<count[0][0][2]<<endl;
   cout<<"count[0][1][1]: "<<count[0][1][1]<<endl;
   cout<<"entry_center[0]: "<<entry_center[0]<<endl;
+  cout<<" "<<endl;
+  // cout<<"count[1][1][2]: "<<count[1][1][2]<<endl;
+  // cout<<"count[1][2][2]: "<<count[1][2][2]<<endl;
+  // cout<<"count[1][2][1]: "<<count[1][2][1]<<endl;
+  // cout<<"count[1][2][0]: "<<count[1][2][0]<<endl;
+  // cout<<"count[1][1][0]: "<<count[1][1][0]<<endl;
+  // cout<<"count[1][0][0]: "<<count[1][0][0]<<endl;
+  // cout<<"count[1][0][1]: "<<count[1][0][1]<<endl;
+  // cout<<"count[1][0][2]: "<<count[1][0][2]<<endl;
+  // cout<<"count[1][1][1]: "<<count[1][1][1]<<endl;
+  // cout<<"entry_center[1]: "<<entry_center[1]<<endl;
+  // cout<<" "<<endl;
+  cout<<"count[2][1][2]: "<<count[2][1][2]<<endl;
+  cout<<"count[2][2][2]: "<<count[2][2][2]<<endl;
+  cout<<"count[2][2][1]: "<<count[2][2][1]<<endl;
+  cout<<"count[2][2][0]: "<<count[2][2][0]<<endl;
+  cout<<"count[2][1][0]: "<<count[2][1][0]<<endl;
+  cout<<"count[2][0][0]: "<<count[2][0][0]<<endl;
+  cout<<"count[2][0][1]: "<<count[2][0][1]<<endl;
+  cout<<"count[2][0][2]: "<<count[2][0][2]<<endl;
+  cout<<"count[2][1][1]: "<<count[2][1][1]<<endl;
+  cout<<"entry_center[2]: "<<entry_center[2]<<endl;
+  // cout<<" "<<endl;
+  // cout<<"count[3][1][2]: "<<count[3][1][2]<<endl;
+  // cout<<"count[3][2][2]: "<<count[3][2][2]<<endl;
+  // cout<<"count[3][2][1]: "<<count[3][2][1]<<endl;
+  // cout<<"count[3][2][0]: "<<count[3][2][0]<<endl;
+  // cout<<"count[3][1][0]: "<<count[3][1][0]<<endl;
+  // cout<<"count[3][0][0]: "<<count[3][0][0]<<endl;
+  // cout<<"count[3][0][1]: "<<count[3][0][1]<<endl;
+  // cout<<"count[3][0][2]: "<<count[3][0][2]<<endl;
+  // cout<<"count[3][1][1]: "<<count[3][1][1]<<endl;
+  // cout<<"entry_center[3]: "<<entry_center[3]<<endl;
+  // cout<<" "<<endl;
+  // cout<<"count[4][1][2]: "<<count[4][1][2]<<endl;
+  // cout<<"count[4][2][2]: "<<count[4][2][2]<<endl;
+  // cout<<"count[4][2][1]: "<<count[4][2][1]<<endl;
+  // cout<<"count[4][2][0]: "<<count[4][2][0]<<endl;
+  // cout<<"count[4][1][0]: "<<count[4][1][0]<<endl;
+  // cout<<"count[4][0][0]: "<<count[4][0][0]<<endl;
+  // cout<<"count[4][0][1]: "<<count[4][0][1]<<endl;
+  // cout<<"count[4][0][2]: "<<count[4][0][2]<<endl;
+  // cout<<"count[4][1][1]: "<<count[4][1][1]<<endl;
+  // cout<<"entry_center[4]: "<<entry_center[4]<<endl;
+  // cout<<" "<<endl;
+  // cout<<"count[5][1][2]: "<<count[5][1][2]<<endl;
+  // cout<<"count[5][2][2]: "<<count[5][2][2]<<endl;
+  // cout<<"count[5][2][1]: "<<count[5][2][1]<<endl;
+  // cout<<"count[5][2][0]: "<<count[5][2][0]<<endl;
+  // cout<<"count[5][1][0]: "<<count[5][1][0]<<endl;
+  // cout<<"count[5][0][0]: "<<count[5][0][0]<<endl;
+  // cout<<"count[5][0][1]: "<<count[5][0][1]<<endl;
+  // cout<<"count[5][0][2]: "<<count[5][0][2]<<endl;
+  // cout<<"count[5][1][1]: "<<count[5][1][1]<<endl;
+  // cout<<"entry_center[5]: "<<entry_center[5]<<endl;
+  // cout<<" "<<endl;
 
 	
 }

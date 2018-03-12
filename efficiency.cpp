@@ -107,16 +107,33 @@ void efficiency(){
       tileI=deciX/30;
       tileJ=deciY/30;
 
-      // if (ntp==1) {
-      // 	HBU_x[j]=HBU_x[j]+4.;
-      // 	HBU_y[j]=HBU_y[j]+2.;
-      // }
-      //      if (ntp==2) {
-	//      	HBU_x[j]=HBU_x[j]+0.35;
-      // 	HBU_y[j]=HBU_y[j]+5.;
-      // }
+      if (ntp==0) {
+      	HBU_x[j]=HBU_x[j]-0.14;
+      	HBU_y[j]=HBU_y[j]+0.005;
+      }
+      if (ntp==1) {
+      	HBU_x[j]=HBU_x[j]+0.489;
+      	HBU_y[j]=HBU_y[j]+1.19;
+      }
+      if (ntp==2) {
+      	HBU_x[j]=HBU_x[j]+0.223;
+      	HBU_y[j]=HBU_y[j]+1.045;
+      }
+      if (ntp==3) {
+      	HBU_x[j]=HBU_x[j]+0.5915;
+      	HBU_y[j]=HBU_y[j]+0.52;
+      }
+      if (ntp==4) {
+      	HBU_x[j]=HBU_x[j]+0.625;
+      	HBU_y[j]=HBU_y[j]+0.1825;
+      }
+      if (ntp==5) {
+      	HBU_x[j]=HBU_x[j]+1.275;
+      	HBU_y[j]=HBU_y[j]-0.0675;
+      }
+      
       if (HhitK[j+1]==HhitK[j]) continue;
-
+      
       if ( 
 	  HBU_x[j]>-205.+30.*tileI
 	  && HBU_x[j]<-215.+30.*(tileI+1)
