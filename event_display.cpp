@@ -1,7 +1,7 @@
-void event_display(int evenum = 600438){
+void event_display(int evenum = 8800){
   TString matchfile;
-  //  matchfile.Form("../rootfile/cosmic/cosmi_1224_2163.root");
-  matchfile.Form("../rootfile/everything/testWE.root");
+    matchfile.Form("../rootfile/cosmic/18Feb20_6layer/cosmi_0220_2262.root");
+  //  matchfile.Form("../rootfile/everything/testWE.root");
   TFile *fmatch = new TFile(matchfile.Data(), "read");
   TTree *tmatch = (TTree*)fmatch->Get("bigtree");
   Int_t HhitI[256],HhitJ[256],HhitK[256],Hnhit;
